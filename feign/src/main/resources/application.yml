@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: feign
+
+server:
+  port: 8764
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000 #连接超时
+        readTimeout: 5000 #读取超时
+        loggerLevel: basic #日志等级，可选值：
+        #NONE: 不记录任何日志（默认值）
+        #BASIC: 仅记录请求方法、URL、响应状态码以及执行时间
+        #HEADERS: 记录BASIC级别的基础之上，记录请求和响应的header
+        #FULL: 记录请求和响应的header，body和元数据
+logging:
+  level:
+    com.springcloud.feign.client.UserFeignClient: debug

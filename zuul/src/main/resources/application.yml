@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: zuul
+
+server:
+  port: 8000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+zuul:
+  prefix: /api
+  #ignored-services: * # 忽略所有微服务
+  #ignored-services: movie-service # 忽略指定服务
+  #ignoredPatterns:/**/user/* #忽略所有包含/user的请求
+  routes:
+    user-service: /u/**
+    hystrix: /h/**
+  # 禁用指定过滤器设置
+  #PreFilter:
+  #  pre:
+  #    disable: true # 禁用我们创建的PreFilter过滤器
+
+ribbon: #zuul内置了ribbon
+  ConnectionTimeout: 3000
+  ReadTimeout: 60000
+
+#提高hystrix超时时间,应对大文件上传可能超时的情况
+hystrix: #zuul内置了hystrix
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMillseconds: 60000

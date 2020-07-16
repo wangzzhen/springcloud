@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: config-server #服务名称
+  cloud:
+    config:
+      name: config #这个属性默认是spring.application.name，
+                  #这里我们要与git中的config前缀相对应才能取到git中的配置文件
+                  #也可以将spring.application.name设置为config，效果一样
+      server:
+        git:
+          uri: https://github.com/wangzzhen/spring-cloud-config
+          default-label: master
+          skip-ssl-validation: true #跳过ssl验证
+          timeout: 10000 #请求git的timeout
+          username:
+          password:
+    bus:
+      trace:
+        enabled: true # 开启cloud bus跟踪
+  kafka:
+    bootstrap-servers: localhost:9092
+
+#这个配置是暴露刷新端口，bus/refresh全部整合到actuator里面了，需要添加actuator依赖
+#如果没有使用springcloud bus，下面这个配置可以不需要，使用springcloud bus后，
+#当在服务端访问/actuator/refresh时只是config server自己的配置刷新了（不会去获取git里的配置），
+#而config client的配置没有变化，当在服务端访问/actuator/bus-refresh时，所有config client的配置刷新，
+#这就是springcloud bus的自动刷新，客户端不需要配置
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+server:
+  port: 8888

@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: eureka-server
+server: 
+  port: 8761
+
+eureka: 
+  instance:
+    hostname: localhost #实例地址
+  server: 
+    enableSelfPreservation: false #本地调试关闭自我保护机制
+    #Eurake有一个配置参数eureka.server.renewalPercentThreshold，定义了renews和renews threshold的比值，
+    #默认值为0.85。比如当server在15分钟内（默认心跳时间是30s一次），比值低于percent，即少了15%的微服务心跳，server会进入自我保护状态，
+    #在此状态下，server不会删除注册信息，这就有可能导致在调用微服务时，实际上服务并不存在。
+    #这种保护状态实际上是考虑了client和server之间的心跳是因为网络问题，而非服务本身问题，不能简单的删除注册信息
+    #在本地调试时可以把renewalPercentThreshold比值调低，比如0.49，也可以简单粗暴直接关闭。
+    #生产环境可以部署多个server端，开自注册。
+    #Renews threshold：server期望在每分钟中收到的心跳次数 ，Renews (last min)：上一分钟内收到的心跳次数。
+    #server开自注册，Renews threshold值为1+2*n（n为client个数），Renews值为2*n（n为client数，这时1个server也算一个client）
+    #server不开自注册，Renews threshold值为1+2*n（n为client个数），Renews值为2*n（n为client数）
+  client: #下面这两个参数是为了关闭自注册，即禁止将自己变为client，因为是单机测试，只有一个server，
+           #为了保证有一个server所以必须关闭自注册，有两个或以上server端时，可以不关闭
+           #默认是开自注册的
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl: #eureka服务端地址（这里是单节点），server端之间可以互相注册（server端自注册要开启），注册方式与client一样，
+                #比如http://localhost:8761/eureka/,http://localhost:8760/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

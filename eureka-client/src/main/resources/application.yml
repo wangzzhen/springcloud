@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: eureka-client
+server:
+  port: 8762
+
+eureka:
+  client:
+    serviceUrl: #对应服务端的地址，如果有多个服务端，多个地址用逗号连接，
+    #比如：http://localhost:8761/eureka/,http://localhost:8760/eureka/
+      defaultZone: http://localhost:8761/eureka/
